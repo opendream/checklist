@@ -1,0 +1,163 @@
+<?php
+function checklist2_schema() {
+
+  $schema['checklist'] = array(
+    'description' => t('The base table for checklist.'),
+    'fields' => array(
+      'cid' => array(
+      'description' => t('The primary identifier'),
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'auto_increment' => TRUE,
+      'not null' => TRUE),
+
+     'title' => array(
+       'description' => t('title of checklist'),
+       'type' => 'varchar',
+       'length' => '200',
+       'not null' => TRUE
+     ),
+
+     'ctid' => array(
+       'description' => t('ralation from checklist_type table fild ctid'),
+       'type' => 'int',
+       'unsigned' => TRUE,
+       'not null' => TRUE),
+
+     'parent_id' => array(
+       'description' => t('parent id from cid '),
+       'type' => 'int',
+       'unsigned' => TRUE,
+       'not null' => TRUE),
+     'checked' => array(
+       'description' => t('parent id from cid '),
+       'type' => 'varchar',
+       'length' => '200',
+       'not null' => TRUE),
+
+    ),
+   'primary key' => array('cid'),
+  );
+
+
+  $schema['checklist_type'] = array(
+    'description' => t('The base table for checklist type'),
+    'fields' => array(
+      'ctid' => array(
+      'description' => t('The primary identifier'),
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'auto_increment' => TRUE,
+      'not null' => TRUE),
+
+     'title' => array(
+       'description' => t('title of checklist type'),
+       'type' => 'varchar',
+       'length' => '100',
+       'not null' => TRUE
+     ),
+
+     
+    ),
+   'primary key' => array('ctid'),
+  );
+
+ 
+
+ return $schema;
+}
+
+function checklist2_install() {
+  // Populate the default {node_access} record.
+  db_insert('checklist_type')->fields(array('ctid' => 1, 'title' => 'none function',))->execute();
+  db_insert('checklist_type') ->fields(array('ctid' => 2, 'title' => 'function', )) ->execute(); 
+
+  db_insert('checklist') ->fields(array('title' => 'Content and Style','cid' => 1, 'ctid' => 1,'parent_id' => 0 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Search Engine Visibility, SEO and Metrics' ,'ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 2,)) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Functional Testing','ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 3)) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Security/Risk','ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 4)) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Performance','ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 5)) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Finishing Touches','ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 6)) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Special Feature','ctid' => 1,'parent_id' => 0 ,'checked' => 'N' ,'cid' => 7)) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'การเว้นวรรค และเครื่องหมายวรรคตอนต่าง ๆ อย่างเช่น "" หรือ - วงเล็บเปิดปิด','ctid' => 1,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'หัวข้อต้องสื่อถึง ความสัมพันธ์ กับเนื้อหาด้วย','ctid' => 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Check for widow/orphan terms in important paragraphs' ,'ctid' => 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Capitalisation' ,'ctid'=> 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'วลีที่ใช้ร่วมกัน (บ่อย ๆ) อย่างเช่น more link' ,'ctid' => 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ list (อย่างเช่น list ต้องจบด้วยจุด)' ,'ctid' => 1,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ link ที่เขียนขึ้นเองว่าไปถูกที่รึเปล่า' ,'ctid' => 1,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบเนื้อหา ต้องไม่มี test content' ,'ctid' => 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ดูว่าหน้าสำคัญ ๆ แสดงเป็นอย่างไร' ,'ctid' => 2,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ ข้อความที่ซ่อนอยู่ อย่างเช่น alt title' ,'ctid' => 1,'parent_id' => 1 ,'checked' => 'N' )) ->execute(); 
+  
+  
+
+  db_insert('checklist') ->fields(array('title' => 'page title ต้องสื่อความหมายให้ได้มากที่สุด' ,'ctid' => 1,'parent_id' => 2 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'สร้าง metadata ให้กับหน้าที่สำคัญ (อาจจะลำบากสำหรับ drupal)' ,'ctid' => 1,'parent_id' => 2 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจว่าเนื้อหาใช้ tag ได้ถูกต้อง (อย่างเช่น h1)' ,'ctid' => 1,'parent_id' => 2 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'รูปแบบของ url ต้องทำให้อ่านง่าย ๆ สั้นกระชับ' ,'ctid' => 2,'parent_id' => 2 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'สร้าง XML site map' ,'ctid' => 1,'parent_id' => 2 ,'checked' => 'N' )) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'เช็คฟังก์ชันการใช้งาน ที่ซับซ้อน' ,'ctid' => 1,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'เช็คฟังก์ชันการค้นหา (ผลลัพท์ถูกต้องรึเปล่า)' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'เช็ค browser ทั้ง ชนิด เวอร์ชั่น และแพลตฟอร์ม ว่าทำงานเหมือนกัน?' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ ความแตกต่าง แต่ละความละเอียดของหน้าจอ' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ทดสอบ form ทุก form, เพิ่ม anti spam, ตรวจสอบข้อความ ของอีเมล์อัตโนมัติ ' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ทดสอบโดยที่ปิด javascript, flash และ plug in ต่าง ๆ' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ link ภายนอกทั้งหมด ว่าทำงานได้รึเปล่า' ,'ctid' => 2,'parent_id' => 3 ,'checked' => 'N' )) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'back up เว็บ กับ database => dev.site(อาจจะยกเว้นกับ site ที่ใหญ่มาก ๆ)' ,'ctid' => 1,'parent_id' => 4 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบความปลอดภัยในส่วนของ administrator' ,'ctid' => 1,'parent_id' => 4 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ลองเจาะเว็บตัวเอง ทดสอบความปลอดภัย(น่าจะเป็นพวก url ที่พิมพ์เข้าตรง ๆ ได้ก็พอ)' ,'ctid' => 1,'parent_id' => 4 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ดูที่ว่างใน host' ,'ctid' => 1,'parent_id' => 4 ,'checked' => 'N' )) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'ทดสอบการโหลด' ,'ctid' => 2,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบความเหมาะสมของชนิดรูป' ,'ctid' => 1,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบเวลาการโหลดหน้า(ได้แค่หน้าสำคัญ ๆ ก็น่าจะพอ)' ,'ctid' => 2,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ทำให้ไฟล์ JavaScript/HTML/CSS เล็กที่สุด' ,'ctid' => 2,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'Optimise CSS : ใช้ short image url, ' ,'ctid' => 1,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบการตั้งค่าในทุกระดับ ตั้งแต่ server ยัน CMS' ,'ctid' => 1,'parent_id' => 5 ,'checked' => 'N' )) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'สร้างหน้า 404 หรือ error page, access denied' ,'ctid' => 2,'parent_id' => 6 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'สร้าง favicon' ,'ctid' => 2,'parent_id' => 6 ,'checked' => 'N' )) ->execute(); 
+
+
+  db_insert('checklist') ->fields(array('title' => 'แปลภาษาในส่วนของอีเมลตอบกลับ หรือในส่วนที่ติดต่อกับ user อัตโนมัติ(ถ้าเป็นเว็บภาษาไทย)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ลง mollom และตรวจสอบ key ของ mollom ด้วย (หรือ Captcha)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ติดตั้ง google analytic ตรวจดู key ของ analytic' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจ permission ของ webmaster' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจดูว่าคนทั่วไปต้องใส่ input เป็น html ไม่ได้(แล้วแต่กรณี)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'breadcrumb ต้องเนียน(ถ้ามี)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => ' Active Menu' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจดูจำนวน Items to display ของแต่ละ view ว่าใช่ที่ต้องการรึเปล่า ต้องมีเลขหน้าด้วย' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจ permission ให้ครบ ทุก role' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตอนทำ manual ต้องลองทำตาม แล้วก็ย้อนไปดู permission อีกที' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ขนาดของไฟล์ที่จะให้อัพโหลดของแต่ละ role' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจดูว่าจะให้ ckeditor ไปแสดงในหน้าใหนบ้าง' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ให้เอาทุกอย่างเกี่ยวกับ google ออกให้หมด รวมทั้ง robot.txt ด้วย(กรณี .opendream.in.th' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => ' Share Function' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'เปลี่ยน password admin ถ้าหากต้องการความปลอดภัยเพิ่มขึ้น' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'เช็ค password ด้วยว่าถูกต้องรึเปล่า(เน้นกรณีเปลี่ยน domain)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ตรวจดู role ของ imce ว่า user แต่ละ role ถูกต้องรึเปล่า' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+  db_insert('checklist') ->fields(array('title' => 'ย้ายเว็บที่เป็น wordpress ต้องดูเรื่องชื่อของเว็บใน database table wp-options ด้วย' ,'ctid' => 1,'parent_id' => 7 ,'checked' => 'N' )) ->execute();
+  db_insert('checklist') ->fields(array('title' => 'ตรวจ permission settings.php(permission แล้วแต่ละ host)' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute();
+  db_insert('checklist') ->fields(array('title' => 'ตรวจดูการตั้งค่าของ comment ให้ครบทุกชนิดเนื้อหา' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute();
+  db_insert('checklist') ->fields(array('title' => 'ตรวจสอบ copy right' ,'ctid' => 2,'parent_id' => 7 ,'checked' => 'N' )) ->execute(); 
+
+
+
+
+
+  
+  
+}
+ function checklist2_enable() {
+  drupal_install_schema('scrumbor_card');
+}
+?>
