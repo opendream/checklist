@@ -1,0 +1,6 @@
+; $Id$
+name = checklist2
+description = including function and none function checklist about your website   
+package = "checklist"
+core = 7.x
+project = "checklist2"

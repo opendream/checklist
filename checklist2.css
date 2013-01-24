@@ -1,0 +1,80 @@
+
+.checklist_parent {
+  font-size: 1.3em;
+  font-weight: bold;
+   
+}
+.checklist_h1 {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #477b96;
+  float: left;
+}
+.ckecklist_clear {
+  clear: both;
+}
+#checklist_btu_add_parent {
+  border: 1px solid #CCCCCC;
+  border-radius: 5px 5px 5px 5px;
+  box-shadow: 0 1px 0 #DDDDDD;
+  color: #000000;
+  line-height: 16px;
+  padding: 2px 10px;
+  width: 160px;
+  float: left;
+  margin: 0px 5px;
+  cursor: pointer;
+}
+.checklist_text_input {
+  border: none;
+  border-bottom: 1px dotted #444;
+   
+}
+#btu_add_parent_form {
+
+  text-decoration: underline;
+  
+}
+.hidden {
+  visibility: hidden;
+  font-weight: normal;
+  font-size: .7em;
+   
+  padding: 0px 5px;
+  cursor: pointer;
+}
+.checklist_child_list {
+  font-weight: normal;
+  font-size: 1.0em;
+  margin-left: 20px;
+}
+.edit_box,.add_box{
+ background: #eee; 
+ padding: 6px;
+}
+.checklist_function {
+  color: blue;
+}
+.checklist_checked_all {
+  color: green;
+}
+.checklist_checked_33 {
+  color: red;
+}
+.checklist_checked_66 {
+  color: #e08b5c;
+}
+.checklist_checked_99 {
+  color: #e0d15c;
+}
+
+#progress-wrapper {
+  border: 1px solid #000000;
+  background-color: transparent;
+  width: 100px;
+  height: 16px;
+}
+#progress-value {
+  background-color: #acacac;
+  height: 16px;
+}

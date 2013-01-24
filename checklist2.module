@@ -1,0 +1,395 @@
+<?
+function checklist2_menu() {
+ $items = array();
+ $items['admin/checklist'] = array(
+    'title' => 'Checklist',
+    'title callback' => 'MY_PAGE_CALLBACK_TITLE_FUNCTION',
+    'title arguments' => array(1),
+    'page callback' => 'checklist2_list',
+    //'page arguments' => array(t('This page is displayed by the simplest (and base) menu example. Note that the title of the page is the same as the link title. You can also <a href="!link">visit a similar page with no menu link</a>. Also, note that there is a hook_menu_alter() example that has changed the path of one of the menu items.', array('!link' => url('examples/menu_example/path_only')))),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 20,
+  );
+
+ $items['checklist2/add'] = array(
+    'title' => 'add',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('checklist2_parent_add_form'),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    'file' => 'checklist2_form.inc',
+  );
+	
+ $items['checklist2/cmd'] = array(
+    'title' => 'add',
+    'page callback' => 'checklist2_cmd',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    
+  );
+
+  /*$items['checklist2/new_parent_display'] = array(
+    'title' => 'checklist',
+    'page callback' => 'checklist2_list',
+    'page arguments' => array(t('This page is displayed by the simplest (and base) menu example. Note that the title of the page is the same as the link title. You can also <a href="!link">visit a similar page with no menu link</a>. Also, note that there is a hook_menu_alter() example that has changed the path of one of the menu items.', array('!link' => url('examples/menu_example/path_only')))),
+    'access callback' => TRUE,
+    'access arguments' => array('access administration pages'),
+    'expanded' => TRUE,
+    //'type' => MENU_SUGGESTED_ITEM,
+    'type' => MENU_CALLBACK,
+    
+  );*/
+
+/*$items['checklist2/noti'] = array
+(
+    'title' => 'Check List',
+    'page callback' => 'checklist2_list',
+    'page arguments' => array(t('This page is displayed by the simplest (and base) menu example. Note that the title of the page is the same as the link title. You can also <a href="!link">visit a similar page with no menu link</a>. Also, note that there is a hook_menu_alter() example that has changed the path of one of the menu items.', array('!link' => url('examples/menu_example/path_only')))),
+    'access callback' => TRUE,
+    //'expanded' => TRUE,
+    //'type' => MENU_SUGGESTED_ITEM,
+    //'weight' => 0,
+    //'menu_name' => 'primary-links',
+); */
+    $items['checklist2/notification'] = array(
+    'title' => 'add',
+    'page callback' => 'checklist_notification',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    
+  );
+
+ 
+	return $items;
+}
+/*
+function checklist2_menu_alter(&$items , $count) {
+  $items['admin/checklist']['title'] = 'Feel like joining?'.$count ;
+  //$items['user/password']['title'] = 'Lost your password?';
+}
+*/
+
+function MY_PAGE_CALLBACK_TITLE_FUNCTION($arg) {
+  //echo $arg
+  // 
+    //return $arg . '( ' . ' )';
+    return $arg;
+}
+
+
+
+function checklist2_list($content = NULL) {
+    MY_PAGE_CALLBACK_TITLE_FUNCTION('test');
+    //checklist2_menu_alter();
+    //checklist_notification();
+	drupal_add_js(drupal_get_path('module', 'checklist2') . '/checklist2.js');
+    drupal_add_js(drupal_get_path('module', 'checklist2') . '/ajax_form.js');
+    //drupal_add_js('modules/checklist2/ajax_form.js');
+	$output = theme('checklist2_parent_add'); 
+    drupal_add_css(drupal_get_path('module', 'checklist2') . '/checklist2.css', array('group' => CSS_DEFAULT, 'every_page' => TRUE));
+    //echo drupal_render(drupal_get_form('checklist2_parent_add_form'));
+	$query = db_select('checklist', 'c');  
+	$query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+	$query
+  		->fields('c', array('cid', 'title'))  
+  		->fields('ct', array('ctid'))  
+        ->orderBy('c.cid','DESC')
+        ->condition('c.parent_id'    ,0, '=');
+         
+	$result = $query->execute();
+	foreach($result as $record) {
+		
+        $query = db_select('checklist', 'c');  
+        $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+        $query
+            ->fields('c', array('cid', 'title', 'checked' ))  
+            ->fields('ct', array('ctid'))  
+            ->orderBy('c.cid','DESC')
+            ->condition('c.parent_id'    ,$record->cid, '=');
+
+        $result_child = $query->execute(); 
+        $array_child = array();
+        
+        foreach($result_child as $record_child) {
+            $array_child[] = $record_child;
+            
+
+        }  
+        //print_r($array_child);
+       
+        $variables = array(
+            'record' => $record,
+            'array_child' => $array_child
+        );
+        //print_r($array_child);
+        $output .= theme('checklist2_parent', $variables); 
+         
+	}
+	   //$output .= theme('checklist2_notifacation'); 
+	 return $output;
+	
+}
+function new_parent_display($cid) {
+    $query = db_select('checklist', 'c');  
+    $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+    $query
+        ->fields('c', array('cid', 'title'))  
+        ->fields('ct', array('ctid'))  
+        ->orderBy('c.cid','DESC')
+        ->condition('c.cid'    ,$cid, '=');
+         
+    $result = $query->execute();
+    foreach($result as $record) {
+        
+        $query = db_select('checklist', 'c');  
+        $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+        $query
+            ->fields('c', array('cid', 'title', 'checked' ))  
+            ->fields('ct', array('ctid'))  
+            ->orderBy('c.cid','DESC')
+            ->condition('c.parent_id'    ,$record->cid, '=');
+
+        $result_child = $query->execute(); 
+        $array_child = array();
+        
+        foreach($result_child as $record_child) {
+            $array_child[] = $record_child;
+            
+
+        }  
+       
+        $variables = array(
+            'record' => $record,
+            'array_child' => $array_child
+        );
+        //print_r($array_child);
+        $output = theme('checklist2_parent', $variables); 
+        
+    }
+    
+    
+     return $output;
+}
+
+function new_child_display($cid) {
+        $query = db_select('checklist', 'c');  
+        $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+        $query
+            ->fields('c', array('cid', 'title', 'checked' ))  
+            ->fields('ct', array('ctid'))  
+            ->orderBy('c.cid','DESC')
+            ->condition('c.cid'    ,$cid, '=');
+
+        $result_child = $query->execute(); 
+        $array_child = array();
+        
+        foreach($result_child as $record_child) {
+            $array_child[] = $record_child;
+            
+
+        }  
+       
+        $variables = array(
+            'array_child' => $array_child
+        );
+        //print_r($array_child);
+        $output = theme('checklist2_child', $variables); 
+        return $output;
+}
+function checklist2_theme() {
+
+  return array(
+        'checklist2_parent' => array(
+            'arguments' => array(
+                'result' => NULL
+            ),
+            'template' => 'checklist2-parent', // do not include .tpl.php
+            
+        ),
+        'checklist2_parent_add' => array(
+            'arguments' => array(
+                'result' => NULL
+            ),
+            'template' => 'checklist2-parent-add', // do not include .tpl.php
+            
+        ),
+        'checklist2_child' => array(
+            'arguments' => array(
+                'result' => NULL
+            ),
+            'template' => 'checklist2-child', // do not include .tpl.php
+            
+        ),
+        'checklist2_child_add' => array(
+            'arguments' => array(
+                'result' => NULL
+            ),
+            'template' => 'checklist2-child-add', // do not include .tpl.php
+            
+        )
+    );
+}
+
+
+function checklist2_cmd() {
+    $title = $_POST['title'];
+    $ctid = $_POST['ctid'];
+    $action = $_POST['action'];
+    $checked = $_POST['checked'];
+    $cid = $_POST['cid'];
+   
+    if($ctid == '') {
+        $ctid = 1;
+    }
+    if($checked){
+        $checked = 'Y';
+    }
+    else {
+        $checked ='N';
+    }
+     //echo $checked;
+    if($cid == '') {
+        $cid = 0;
+    }
+    if($action == 'add_parent') {
+        $insert = db_insert('checklist')->fields(array('title', 'ctid','parent_id', 'checked'));
+        $nid = $insert->values(array('title' => $title, 'ctid' => $ctid,'parent_id' => $cid,'checked' => $checked))->execute();
+        
+        if($cid == 0) {
+            echo new_parent_display($nid);
+            //echo  $cid;
+        }
+        else {
+            echo new_child_display($nid);   
+        }
+        
+
+
+
+        /*echo "{";   
+            echo                "ctid: '".$ctid."',\n";
+            echo                "id: '" .$id."',\n";
+            echo                "ScheduleID: '" .$ScheduleID."'\n";
+            echo "}";   
+            */
+    }
+    elseif($action == 'add_child') {
+        $insert = db_insert('checklist')->fields(array('title', 'ctid','parent_id', 'checked'));
+        $nid = $insert->values(array('title' => $title, 'ctid' => '1','parent_id' => $cid,'checked' => $checked))->execute();
+        //print $_POST['data'].'';
+        //$array = array();
+        //$array = (checklist_serial_to_array($_POST['data']));
+        //print($title);
+    }
+    elseif($action == 'trash_parent') {
+
+        $num_deleted = db_delete('checklist')
+        ->condition('cid', $cid)
+        ->execute();
+
+        $num_deleted = db_delete('checklist')
+        ->condition('parent_id', $cid)
+        ->execute();
+        //echo " Delete complete";
+    }
+    elseif($action == 'edit_child') {
+        $num_updated = db_update('checklist') // Table name no longer needs {}
+            ->fields(array(
+            'title' => $title,
+            'checked' => $checked,
+            'ctid' => $ctid,
+          ))
+          ->condition('cid', $cid, '=')
+          ->execute();
+          echo new_child_display($cid);
+    }
+    elseif($action == 'edit_parent') {
+        $num_updated = db_update('checklist') // Table name no longer needs {}
+            ->fields(array(
+            'title' => $title,
+            //'checked' => $checked,
+            //'ctid' => $ctid,
+          ))
+          ->condition('cid', $cid, '=')
+          ->execute();
+          echo new_parent_display($cid);
+    }
+    elseif($action == 'edit_checked') {
+        $num_updated = db_update('checklist') // Table name no longer needs {}
+            ->fields(array(
+            'checked' => $checked,
+            //'checked' => $checked,
+            //'ctid' => $ctid,
+          ))
+          ->condition('cid', $cid, '=')
+          ->execute();
+         // echo  $checked;
+    }
+    //echo $action;
+   
+    //checklist_notification();
+}
+
+function checklist_notification() {
+    $query = db_select('checklist', 'c');  
+        $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+        $query
+            ->orderBy('c.cid','DESC')
+            ->condition('c.ctid'    ,2, '=')
+            ->condition('c.parent_id'    ,0, '!=')
+            ->condition('c.checked'    ,'N', '=');
+        $query->addExpression('COUNT(c.cid)', 'ncount');
+
+        $result = $query->execute(); 
+        $array = array();
+        foreach($result as $record) {
+            $array[] = $record;
+        }
+
+        $query = db_select('checklist', 'c');  
+        $query->join('checklist_type', 'ct', 'ct.ctid = c.ctid ');  
+        $query
+            ->orderBy('c.cid','DESC')
+            ->condition('c.ctid'    ,2, '=')
+            ->condition('c.parent_id'    ,0, '!=');
+        $query->addExpression('COUNT(c.cid)', 'ncount');
+
+        $result = $query->execute(); 
+        $array2 = array();
+        foreach($result as $record) {
+            $array2[] = $record;
+        }  
+        $not_checked = $array[0]->ncount;
+        $total = $array2[0]->ncount;
+        $percent = (($total-$not_checked)/$total)*100;
+        if($not_checked == 0) {
+            $text = '<font class = "checklist_checked_all" >';
+        }
+        elseif ($percent <= 33 ) {
+            $text = '<font class = "checklist_checked_33" >';
+        }
+        elseif ($percent <= 66) {
+            $text = '<font class = "checklist_checked_66" >';
+        }
+        elseif ($percent <= 99 ) {
+            $text = '<font class = "checklist_checked_99" >';
+        }
+        $text .= ($array[0]->ncount.' check list  item  is function not checked ! ').'</font>';
+
+        if( is_numeric($percent) && $percent > 0 && $percent <= 100 ) {
+            $style = "width: ".number_format($percent,2)."%; display: block";
+        }
+
+        $text .= '<br>progress '.number_format($percent,2).' % <div id="progress-wrapper"> <div id="progress-value" style="'.$style.'"></div> <div>';
+        echo $text;
+
+
+
+}
+
+
+
+
